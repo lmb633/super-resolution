@@ -9,8 +9,9 @@ from utils import AverageMeter, visualize
 
 root = 'data/val2017'
 
+train_g_freq = 5
 print_freq = 10
-weight = 10
+weight = 1
 epochs = 1000
 lr = 0.0001
 batch_size = 32
@@ -56,19 +57,20 @@ def train():
             fake_b = net_g(img_a)
 
             # update discriminator
-            optimzer_d.zero_grad()
+            if i % 5 == 0:
+                optimzer_d.zero_grad()
 
-            fake = torch.cat((img_a, fake_b), 1)
-            out_fake = net_d(fake.detach())
-            loss_fake = criterionGAN(out_fake, False)
+                fake = torch.cat((img_a, fake_b), 1)
+                out_fake = net_d(fake.detach())
+                loss_fake = criterionGAN(out_fake, False)
 
-            real = torch.cat((img_a, img_b), 1)
-            out_real = net_d(real)
-            loss_real = criterionGAN(out_real, True)
-
-            loss_d = (loss_fake + loss_real) * 0.5
-            loss_d.backward()
-            optimzer_d.step()
+                real = torch.cat((img_a, img_b), 1)
+                out_real = net_d(real)
+                loss_real = criterionGAN(out_real, True)
+                print(loss_fake, loss_real)
+                loss_d = (loss_fake + loss_real) * 0.5
+                loss_d.backward()
+                optimzer_d.step()
 
             # update generator
             optimzer_g.zero_grad()
