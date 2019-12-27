@@ -6,7 +6,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 class G_net(nn.Module):
-    def __init__(self, inchannel=3, outchannel=3, ngf=64, reslayer=9):
+    def __init__(self, inchannel=3, outchannel=3, ngf=32, reslayer=6):
         super(G_net, self).__init__()
         self.inconv = InConv(inchannel, ngf)
         self.down1 = DownSample(ngf, ngf * 2)
@@ -15,7 +15,9 @@ class G_net(nn.Module):
         for i in range(reslayer):
             self.resnet.add_module('res{0}'.format(i), BasicBlock(ngf * 4, ngf * 4))
         self.up1 = UpSample(ngf * 4, ngf * 2)
-        self.up2 = UpSample(ngf * 2, ngf)
+        self.up2 = UpSample(ngf * 2, ngf * 2)
+        self.up3 = UpSample(ngf * 2, ngf)
+        self.up4 = UpSample(ngf, ngf)
         self.outconv = OutConv(ngf, outchannel)
 
     def forward(self, x):
@@ -25,6 +27,8 @@ class G_net(nn.Module):
         x = self.resnet(x)
         x = self.up1(x)
         x = self.up2(x)
+        x = self.up3(x)
+        x = self.up4(x)
         x = self.outconv(x)
         return x
 
@@ -35,7 +39,7 @@ class InConv(nn.Module):
         self.conv = nn.Sequential(
             nn.ReflectionPad2d(3),
             nn.Conv2d(inchannel, outchannel, kernel_size=7),
-            nn.BatchNorm2d(64),
+            nn.BatchNorm2d(outchannel),
             nn.ReLU()
         )
 
@@ -84,7 +88,7 @@ class UpSample(nn.Module):
 
 
 class D_net(nn.Module):
-    def __init__(self, inchannel=3, ndf=64, layer=4):
+    def __init__(self, inchannel=3, ndf=32, layer=4):
         super(D_net, self).__init__()
         self.conv = nn.Sequential()
         for i in range(layer):
@@ -118,14 +122,12 @@ if __name__ == '__main__':
     gnet = G_net(reslayer=2)
     dnet = D_net()
     criterian = PatchLoss()
-    input = torch.randn([1, 3, 119, 119])
+    input = torch.randn([1, 3, 112, 112])
     print(input.shape)
     output = gnet(input)
     print(output.shape)
 
-    output = dnet(input)
+    output = dnet(output)
     print(output.shape)
-    print(output)
     loss = criterian(output, False)
     print(loss)
-

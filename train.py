@@ -16,10 +16,10 @@ lr = 0.0001
 batch_size = 32
 input_channel = 3
 output_channel = 3
-ngf = 64
-ndf = 64
-g_layer = 9
-d_layer = 3
+ngf = 32
+ndf = 32
+g_layer = 6
+d_layer = 4
 check = 'best_checkpoint.tar'
 
 train_set = DatasetFromFolder(root)
