@@ -7,7 +7,7 @@ import os
 from model import G_net, D_net, PatchLoss, device
 from utils import AverageMeter, visualize
 
-root = 'data'
+root = 'data/val2017'
 
 print_freq = 10
 weight = 10
