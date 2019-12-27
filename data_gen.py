@@ -23,8 +23,9 @@ class DatasetFromFolder(data.Dataset):
 
     def __getitem__(self, index):
         img = Image.open(join(self.root, self.image_filenames[index])).convert('RGB')
-        a = img.resize((112, 112), Image.BICUBIC)
-        b = img.resize((448, 448), Image.BICUBIC)
+        a = img.resize((56, 56), Image.BICUBIC)
+        a = a.resize((224, 224), Image.BICUBIC)
+        b = img.resize((224, 224), Image.BICUBIC)
         a = transforms.ToTensor()(a)
         b = transforms.ToTensor()(b)
         a = transforms.Normalize(mean, std)(a)
@@ -40,8 +41,9 @@ if __name__ == '__main__':
     # print(dataset[0])
     loader = DataLoader(dataset, batch_size=1, shuffle=True)
     for data in loader:
-        print(data[0].shape)
-        data = (data[0].squeeze().permute(1, 2, 0) * std + mean) * 255
-        data = data.float().numpy().astype(np.uint8)
-        image_pil = Image.fromarray(data)
-        image_pil.show()
+        for img in data:
+            print(img.shape)
+            data = (img.squeeze().permute(1, 2, 0) * std + mean) * 255
+            data = data.float().numpy().astype(np.uint8)
+            image_pil = Image.fromarray(data)
+            image_pil.show()

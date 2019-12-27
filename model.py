@@ -15,9 +15,7 @@ class G_net(nn.Module):
         for i in range(reslayer):
             self.resnet.add_module('res{0}'.format(i), BasicBlock(ngf * 4, ngf * 4))
         self.up1 = UpSample(ngf * 4, ngf * 2)
-        self.up2 = UpSample(ngf * 2, ngf * 2)
-        self.up3 = UpSample(ngf * 2, ngf)
-        self.up4 = UpSample(ngf, ngf)
+        self.up2 = UpSample(ngf * 2, ngf)
         self.outconv = OutConv(ngf, outchannel)
 
     def forward(self, x):
@@ -27,8 +25,6 @@ class G_net(nn.Module):
         x = self.resnet(x)
         x = self.up1(x)
         x = self.up2(x)
-        x = self.up3(x)
-        x = self.up4(x)
         x = self.outconv(x)
         return x
 
@@ -122,7 +118,7 @@ if __name__ == '__main__':
     gnet = G_net(reslayer=2)
     dnet = D_net()
     criterian = PatchLoss()
-    input = torch.randn([1, 3, 112, 112])
+    input = torch.randn([1, 3, 448, 448])
     print(input.shape)
     output = gnet(input)
     print(output.shape)
