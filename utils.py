@@ -21,7 +21,7 @@ def save_img(image_tensor, filename):
     image_tensor = image_tensor.float().numpy().clip(0, 255).astype(np.uint8)
     image_pil = Image.fromarray(image_tensor)
     image_pil.save(filename)
-    print("Image saved as {}".format(filename))
+    # print("Image saved as {}".format(filename))
 
 
 class AverageMeter(object):

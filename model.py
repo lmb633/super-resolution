@@ -84,7 +84,7 @@ class UpSample(nn.Module):
 
 
 class D_net(nn.Module):
-    def __init__(self, inchannel=3, ndf=32, layer=4):
+    def __init__(self, inchannel=3, ndf=32, layer=6):
         super(D_net, self).__init__()
         self.conv = nn.Sequential()
         for i in range(layer):
@@ -92,7 +92,8 @@ class D_net(nn.Module):
             self.conv.add_module('norm{0}'.format(i), nn.BatchNorm2d(ndf))
             self.conv.add_module('act{0}'.format(i), nn.LeakyReLU(0.2))
             inchannel = ndf
-            ndf = ndf * 2
+            if i % 2 == 0:
+                ndf = ndf * 2
         self.conv.add_module('out', nn.Conv2d(inchannel, 1, kernel_size=3, stride=1, padding=1))
         self.conv.add_module('act', nn.Sigmoid())
 

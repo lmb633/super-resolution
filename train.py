@@ -20,7 +20,7 @@ output_channel = 3
 ngf = 32
 ndf = 32
 g_layer = 6
-d_layer = 4
+d_layer = 6
 check = 'best_checkpoint.tar'
 
 train_set = DatasetFromFolder(root)
