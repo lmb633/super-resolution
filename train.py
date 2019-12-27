@@ -67,7 +67,7 @@ def train():
                 real = torch.cat((img_a, img_b), 1)
                 out_real = net_d(real)
                 loss_real = criterionGAN(out_real, True)
-                print(loss_fake, loss_real)
+                print('loss_d', loss_fake, loss_real)
                 loss_d = (loss_fake + loss_real) * 0.5
                 loss_d.backward()
                 optimzer_d.step()
@@ -80,6 +80,7 @@ def train():
             loss_g = criterionGAN(out_fake, True)
 
             loss_L1 = criterionL1(img_b, fake_b) * weight
+            print('loss_g', loss_g + loss_L1)
             loss_g = loss_g + loss_L1
             loss_g.backward()
             optimzer_g.step()
