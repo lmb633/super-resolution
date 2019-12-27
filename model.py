@@ -118,10 +118,11 @@ if __name__ == '__main__':
     gnet = G_net(reslayer=2)
     dnet = D_net()
     criterian = PatchLoss()
-    input = torch.randn([1, 3, 112, 112])
+    input = torch.randn([1, 3, 119, 119])
     print(input.shape)
     output = gnet(input)
     print(output.shape)
+
     output = dnet(input)
     print(output.shape)
     print(output)
